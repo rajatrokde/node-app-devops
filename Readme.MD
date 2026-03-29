@@ -1,333 +1,202 @@
-# 🚀 Minimal DevOps Pipeline Project
+# 🚀 Minimal DevOps Pipeline Project (Step-by-Step Guide)
 
-This project demonstrates how to implement a **complete DevOps pipeline from scratch** for a sample Node.js application. It includes CI/CD, Docker containerization, Infrastructure as Code (Terraform), and optional monitoring.
+This document describes a step-by-step guide to setting up a **complete DevOps pipeline from scratch** for a sample web application.
 
----
-
-# 📌 Project Overview
-
-This setup solves a real-world problem where:
-
-* Deployments are manual ❌
-* No CI/CD pipeline ❌
-* No containerization ❌
-* No infrastructure automation ❌
-
-👉 This project converts everything into an **automated DevOps workflow** ✅
+It is intended for **newbies** and describes how to go from **manual deployment → DevOps pipeline**.
 
 ---
 
-# 🛠️ Tech Stack
+# 📌 Objective
 
-* Node.js (Sample App)
-* Docker
-* GitHub Actions (CI/CD)
-* Terraform (IaC)
-* AWS EC2 (Infrastructure)
-* Prometheus & Grafana (Monitoring - Optional)
+To set up:
 
----
-
-# 📁 Project Structure
-
-```
-node-app-devops/
-│
-├── app/
-│   ├── index.js
-│   ├── package.json
-│
-├── Dockerfile
-├── docker-compose.yml
-│
-├── .github/workflows/ci-cd.yml
-│
-├── terraform/
-│   ├── main.tf
-│   ├── variables.tf
-│   └── terraform.tfvars
-│
-└── README.md
-```
+* CI/CD pipeline
+* Containerized application
+* Infrastructure as Code
+* Optional: Monitoring system
 
 ---
 
-# ⚙️ Step 1: Setup Sample Application
+# 🛠️ Tools Used
 
-### app/index.js
-
-```js
-const express = require('express');
-const app = express();
-
-app.get('/', (req, res) => {
-    res.send('DevOps Pipeline Running 🚀');
-});
-
-const PORT = 3000;
-app.listen(PORT, () => console.log(`App running on port ${PORT}`));
-```
-
-### app/package.json
-
-```json
-{
-  "name": "node-devops-app",
-  "version": "1.0.0",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Running tests\" && exit 0",
-    "lint": "echo \"Linting done\""
-  },
-  "dependencies": {
-    "express": "^4.18.2"
-  }
-}
-```
+* Node.js: Sample Application
+* Docker: Containerization
+* GitHub Actions: CI/CD
+* Terraform: Infrastructure as Code
+* AWS EC2: Cloud Environment
+* Prometheus & Grafana: Monitoring
 
 ---
 
-# ⚙️ Step 2: Docker Setup
+# 📁 Project Structure Overview
 
-### Dockerfile
+The project will contain the following folders/files:
 
-```Dockerfile
-FROM node:18-alpine
-
-WORKDIR /app
-
-COPY app/package*.json ./
-RUN npm install
-
-COPY app/ .
-
-EXPOSE 3000
-
-CMD ["node", "index.js"]
-```
+* Application code
+* Docker config files
+* CI/CD pipeline config
+* Infrastructure as Code config
 
 ---
 
-### docker-compose.yml
+# ⚙️ Step 1: Create Sample Application
 
-```yaml
-version: '3'
-
-services:
-  app:
-    image: your-dockerhub-username/node-app
-    ports:
-      - "3000:3000"
-
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
-
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3001:3000"
-```
+1. Create a simple web application (e.g., Node.js or your favorite).
+2. Add a simple route (e.g., homepage with a greeting).
+3. Add scripts for:
+   * Start application
+   * Run tests
+   * Lint code
+4. Verify application works.
 
 ---
 
-# ⚙️ Step 3: CI/CD Pipeline (GitHub Actions)
+# ⚙️ Step 2: Containerize Application (Docker)
 
-### .github/workflows/ci-cd.yml
-
-```yaml
-name: DevOps Pipeline
-
-on:
-  push:
-    branches: [ "main" ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-
-    - name: Install Dependencies
-      run: |
-        cd app
-        npm install
-
-    - name: Lint
-      run: |
-        cd app
-        npm run lint
-
-    - name: Test
-      run: |
-        cd app
-        npm test
-
-    - name: Build Docker Image
-      run: docker build -t your-dockerhub-username/node-app .
-
-    - name: Login to DockerHub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-    - name: Push Image
-      run: docker push your-dockerhub-username/node-app
-
-    - name: Deploy
-      run: echo "Deploy step (SSH / Kubernetes / EC2)"
-```
+1. Create a Dockerfile for your application.
+2. Add:
+   * Base image
+   * Working directory
+   * Dependency installation
+   * Application copy
+   * Port mapping
+3. Build Docker image locally.
+4. Run container and verify application works.
 
 ---
 
-# ⚙️ Step 4: Infrastructure as Code (Terraform)
+# ⚙️ Step 3: Setup Docker Compose (Optional)
 
-### terraform/main.tf
+1. Create a Docker Compose config.
+2. Add:
+   * Services:
 
-```hcl
-provider "aws" {
-  region = "ap-south-1"
-}
-
-resource "aws_instance" "devops_server" {
-  ami           = var.ami_id
-  instance_type = var.instance_type
-
-  tags = {
-    Name = "DevOps-Server"
-  }
-}
-```
+* Application container
+   * Monitoring tools (optional)
+3. Expose required ports.
+4. Run all services using a single command.
 
 ---
 
-### terraform/variables.tf
+# ⚙️ Step 4: Setup CI/CD Pipeline
 
-```hcl
-variable "ami_id" {
-  description = "AMI ID"
-}
+1. Pick a CI/CD tool (GitHub Actions is recommended).
+2. Set up a workflow that gets triggered on code push.
+3. Define stages:
 
-variable "instance_type" {
-  default = "t2.micro"
-}
-```
-
----
-
-### terraform/terraform.tfvars
-
-```hcl
-ami_id = "ami-0f5ee92e2d63afc18"
-```
+   * Checkout code
+   * Install dependencies
+   * Run lint checks
+   * Execute tests
+   * Build Docker image
+   * Push image to DockerHub
+   * Deploy application (basic step)
+4. Store DockerHub credentials using secrets.
 
 ---
 
-# 🚀 How to Run the Project
+# ⚙️ Step 5: Setup Infrastructure (Terraform)
 
-## 1️⃣ Run Locally
+1. Initialize Terraform project.
+2. Configure cloud provider (AWS is recommended).
+3. Define infrastructure:
 
-```bash
-cd app
-npm install
-node index.js
-```
+   * Virtual machine (EC2)
+   * Networking (default VPC or custom)
+   * Security group (allow required ports)
+4. Use variables to make configuration more flexible.
+5. Execute:
 
----
-
-## 2️⃣ Run Using Docker
-
-```bash
-docker build -t node-app .
-docker run -p 3000:3000 node-app
-```
+   * Initialization
+   * Plan
+   * Apply
+6. Verify infrastructure creation was successful.
 
 ---
 
-## 3️⃣ Run Using Docker Compose
+# ⚙️ Step 6: Deployment Strategy
 
-```bash
-docker-compose up -d
-```
-
----
-
-## 4️⃣ Run Terraform (Infrastructure Setup)
-
-```bash
-cd terraform
-terraform init
-terraform apply
-```
+1. Connect to the newly created server (SSH).
+2. Install Docker on the server.
+3. Pull Docker image from DockerHub.
+4. Run container on the server.
+5. Verify application accessibility via public IP.
 
 ---
 
-# 🔄 CI/CD Flow
+# ⚙️ Step 7: Monitoring Setup (Optional)
 
-Whenever code is pushed to `main` branch:
+1. Add Prometheus service.
+2. Add Grafana service.
+3. Configure Grafana to connect to Prometheus.
+4. Configure basic dashboards in Grafana.
+5. Access:
 
-1. Code is checked out
-2. Dependencies installed
-3. Linting executed
-4. Tests executed
-5. Docker image built
-6. Image pushed to DockerHub
-7. Deployment triggered
-
----
-
-# 📊 Monitoring (Optional)
-
-| Tool       | URL                   |
-| ---------- | --------------------- |
-| Prometheus | http://localhost:9090 |
-| Grafana    | http://localhost:3001 |
+   * Prometheus UI
+   * Grafana dashboard
 
 ---
 
-# 🔐 Required Secrets (GitHub)
+# 🔄 CI/CD Flow Summary
 
-Go to **Repo → Settings → Secrets** and add:
+For every code push:
 
-* `DOCKER_USERNAME`
-* `DOCKER_PASSWORD`
+1. Fetch code from the repository
+3. Code quality checks are performed
+4. Tests are executed
+5. Docker image is built
+6. Image is pushed to the registry
+7. Deployment is triggered
 
 ---
 
-# 📦 Future Enhancements
+# 🔓 Secrets Configuration
 
-* Kubernetes deployment (EKS / Minikube)
-* Helm charts
-* Auto Scaling (ASG)
-* Load Balancer (ALB)
-* Logging (ELK Stack)
-* Alerting system
+The following secrets need to be configured within the CI/CD tool:
+
+* Docker username
+* Docker password
+
+---
+
+# 📊 Expected Outcome
+
+The expected outcome after performing all the steps is:
+
+* The application is running within the Docker container ✅
+* The CI/CD pipeline is automated ✅
+* The infrastructure is provisioned using code ✅
+* The deployment is repeatable and reliable ✅
+* The monitoring dashboard is available (optional) ✅
+
+---
+
+# 📦 Future Improvements
+
+* Kubernetes deployment
+* Load balancer setup
+* Auto scaling
+* Advanced monitoring and alerting
+* Logging system (ELK stack)
 
 ---
 
 # 👨‍💻 Author
 
-**Rajat Rokde**
+Rajat Rokde
 Cloud & DevOps Engineer
 
 ---
 
-# ⭐ Final Outcome
+# ⭐ Conclusion
 
-This project demonstrates:
+This project shows how to convert an existing traditional system into a **modern DevOps pipeline**, which helps achieve:
 
-* End-to-end DevOps pipeline ✅
-* Infrastructure automation ✅
-* Containerization ✅
-* CI/CD implementation ✅
-* Monitoring setup ✅
+* Faster deployments
+* Automation
+* Scalability
+* Reliability
 
 ---
 
-👉 Perfect for interviews & real-world DevOps portfolio.
+👉 This can be used for interviews, real-world projects, or portfolio purposes.

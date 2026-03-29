@@ -8,7 +8,7 @@ data "aws_ssm_parameter" "ubuntu" {
 
 resource "aws_instance" "devops_server" {
   ami           = data.aws_ssm_parameter.ubuntu.value
-  instance_type = "t2.micro"
+  instance_type = "c7i-flex.large"
 
   tags = {
     Name = "DevOps-Server"

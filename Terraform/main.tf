@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "ap-southeast-2"
+  region = "ap-south-1"
 }
 
 data "aws_ssm_parameter" "ubuntu" {
@@ -8,7 +8,7 @@ data "aws_ssm_parameter" "ubuntu" {
 
 resource "aws_instance" "devops_server" {
   ami           = data.aws_ssm_parameter.ubuntu.value
-  instance_type = "c7i-flex.large"
+  instance_type = "t2.micro"
 
   tags = {
     Name = "DevOps-Server"

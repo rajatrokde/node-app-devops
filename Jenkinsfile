@@ -14,7 +14,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/rajatrokde/node-app-devops.git'
+                git branch: 'main', url: 'https://github.com/rajatrokde/node-app-devops.git'
             }
         }
 

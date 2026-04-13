@@ -1,0 +1,25 @@
+name: Deploy App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t my-app .
+
+      - name: Stop old container
+        run: docker stop my-app || true
+
+      - name: Remove old container
+        run: docker rm my-app || true
+
+      - name: Run container
+        run: docker run -d -p 3000:3000 --name my-app my-app

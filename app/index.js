@@ -10,7 +10,7 @@ app.get('/health', (req, res) => {
 
 // Main route
 app.get('/', (req, res) => {
-  res.send("🚀 Boom DevOps Node App Running Successfully using express !");
+  res.send("🚀 Boom DevOps Node App Running Successfully using express project by RAJAT !");
 });
 
 app.listen(PORT, () => {

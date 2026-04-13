@@ -1,4 +1,4 @@
-# 🚀 Minimal DevOps Pipeline Project (Step-by-Step Guide)
+# Minimal DevOps Pipeline Project (Step-by-Step Guide)
 
 This document describes a step-by-step guide to setting up a **complete DevOps pipeline from scratch** for a sample web application.
 

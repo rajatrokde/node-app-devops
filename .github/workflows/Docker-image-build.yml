@@ -23,11 +23,11 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t rajatrokde//node-app-devops:v1 .
-         docker push rajatrokde/node-app-devops:v1
+          docker build -t rajatrokde//node-app:v1 .
+         docker push rajatrokde/node-app:v1
 
       - name: Deploy container
         run: |
           docker stop mycontainer || true
           docker rm mycontainer || true
-          docker run -d -p 80:80 --name Node-App rajatrokde/node-app-devops:v1
+          docker run -d -p 80:80 --name Node-App rajatrokde/node-app:v1

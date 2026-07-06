@@ -48,6 +48,18 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+    steps {
+        dir('app') {
+            withSonarQubeEnv('SonarQube') {
+                sh '''
+                sonar-scanner
+                '''
+            }
+        }
+    }
+}
+
         stage('Deploy Container') {
             steps {
                 sh '''

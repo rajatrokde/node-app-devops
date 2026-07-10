@@ -5,9 +5,11 @@ pipeline {
         nodejs 'node18'
     }
 
+
     environment {
         IMAGE_NAME = 'rajatrokde/node-app-devops'
         CONTAINER_NAME = 'node-app-container'
+        SCANNER_HOME= tool 'sonarqube'
     }
 
     stages {
@@ -48,7 +50,7 @@ stage('SonarQube Analysis') {
                 withSonarQubeEnv('sonar') {
                     // Use the correct 'sonar-scanner' command
                     // Point binaries to 'target/classes' for efficiency
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BoardGame -Dsonar.projectKey=BoardGame \
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=demo -Dsonar.projectKey=jenkins \
                              -Dsonar.java.binaries=target/classes '''
                 }
              }
@@ -57,7 +59,7 @@ stage('SonarQube Analysis') {
             steps {
                 script {
                   // Allow pipeline to continue even if gate fails (adjust if needed)
-                  waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+                  waitForQualityGate abortPipeline: false, credentialsId: 'sqa_c81b5fac17fb8f95783dec091191c31aaae7e959'
                 }
             }
         }

@@ -50,8 +50,11 @@ stage('SonarQube Analysis') {
                 withSonarQubeEnv('sonarqube') {
                     // Use the correct 'sonar-scanner' command
                     // Point binaries to 'target/classes' for efficiency
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=demo -Dsonar.projectKey=jenkins \
-                             -Dsonar.java.binaries=target/classes '''
+                    sh ''' ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=node-app \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=$SONAR_HOST_URL \
+                        -Dsonar.login=$SONAR_AUTH_TOKEN'''
                 }
              }
         }

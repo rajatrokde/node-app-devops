@@ -47,7 +47,7 @@ pipeline {
 
 stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonar') {
+                withSonarQubeEnv('sonarqube') {
                     // Use the correct 'sonar-scanner' command
                     // Point binaries to 'target/classes' for efficiency
                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=demo -Dsonar.projectKey=jenkins \

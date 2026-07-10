@@ -9,7 +9,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'rajatrokde/node-app-devops'
         CONTAINER_NAME = 'node-app-container'
-        SCANNER_HOME= tool 'sonarqube'
+        SCANNER_HOME= 'sonarqube'
     }
 
     stages {

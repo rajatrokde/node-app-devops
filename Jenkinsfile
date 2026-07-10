@@ -43,22 +43,29 @@ pipeline {
             }
         }
 
+stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonar') {
+                    // Use the correct 'sonar-scanner' command
+                    // Point binaries to 'target/classes' for efficiency
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BoardGame -Dsonar.projectKey=BoardGame \
+                             -Dsonar.java.binaries=target/classes '''
+                }
+             }
+        }
+        stage('Quality Gate') {
+            steps {
+                script {
+                  // Allow pipeline to continue even if gate fails (adjust if needed)
+                  waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+                }
+            }
+        }
+        
         stage('Build Docker Image') {
             steps {
                 dir('app') {
                     sh 'docker build -t ${IMAGE_NAME} .'
-                }
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                dir('app') {
-                    withSonarQubeEnv('SonarQube') {
-                        sh '''
-                            sonar-scanner
-                        '''
-                    }
                 }
             }
         }

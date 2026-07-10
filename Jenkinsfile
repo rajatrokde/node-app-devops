@@ -1,20 +1,21 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = "rajatrokde/node-app-devops"
-        CONTAINER_NAME = "node-app-container"
+    tools {
+        nodejs 'node18'
     }
 
-    tools {
-        nodejs "node18"
+    environment {
+        IMAGE_NAME = 'rajatrokde/node-app-devops'
+        CONTAINER_NAME = 'node-app-container'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/rajatrokde/node-app-devops.git'
+                git branch: 'main',
+                    url: 'https://github.com/rajatrokde/node-app-devops.git'
             }
         }
 
@@ -44,30 +45,46 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'
+                dir('app') {
+                    sh 'docker build -t ${IMAGE_NAME} .'
+                }
             }
         }
 
         stage('SonarQube Analysis') {
-    steps {
-        dir('app') {
-            withSonarQubeEnv('SonarQube') {
-                sh '''
-                sonar-scanner
-                '''
+            steps {
+                dir('app') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh '''
+                            sonar-scanner
+                        '''
+                    }
+                }
             }
         }
-    }
-}
 
         stage('Deploy Container') {
             steps {
                 sh '''
-                docker stop $CONTAINER_NAME || true
-                docker rm $CONTAINER_NAME || true
-                docker run -d -p 3000:3000 --name $CONTAINER_NAME $IMAGE_NAME
+                    docker stop ${CONTAINER_NAME} || true
+                    docker rm ${CONTAINER_NAME} || true
+                    docker run -d -p 3000:3000 --name ${CONTAINER_NAME} ${IMAGE_NAME}
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+
+        success {
+            echo 'Pipeline succeeded.'
+        }
+
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }

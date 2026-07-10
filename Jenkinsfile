@@ -46,18 +46,21 @@ pipeline {
         }
 
 stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    // Use the correct 'sonar-scanner' command
-                    // Point binaries to 'target/classes' for efficiency
-                    sh ''' ${scannerHome}/bin/sonar-scanner \
+    steps {
+        dir('app') {
+            script {
+                def scannerHome = tool 'SonarScanner'
+                withSonarQubeEnv('SonarQube') {
+                    sh """
+                        ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.projectKey=node-app \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=$SONAR_HOST_URL \
-                        -Dsonar.login=$SONAR_AUTH_TOKEN'''
+                        -Dsonar.sources=.
+                    """
                 }
-             }
+            }
         }
+    }
+}
         stage('Quality Gate') {
             steps {
                 script {

@@ -3,16 +3,16 @@ const app = express();
 
 const PORT = 3000;
 
-// Health check endpoint (important for DevOps / monitoring)
+// Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: "UP" });
 });
 
 // Main route
 app.get('/', (req, res) => {
-  res.send(" DevOps Node App Running Successfully using express project by RR infotech Pune );
+  res.send("DevOps Node App Running Successfully using Express project by RR Infotech Pune");
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });

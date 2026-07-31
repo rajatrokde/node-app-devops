@@ -10,7 +10,7 @@ app.get('/health', (req, res) => {
 
 // Main route
 app.get('/', (req, res) => {
-  res.send("DevOps Node App Running Successfully using Express project by RR Infotech Pune");
+  res.send("DevOps Node Application Running Successfully using Express project by RR Infotech Pune");
 });
 
 app.listen(PORT, '0.0.0.0', () => {
